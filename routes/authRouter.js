@@ -7,12 +7,14 @@ const {
   loginPostController,
   logout,
 } = require("../controllers/authController");
+const { loginValidator } = require("../validator/login");
+const { registerValidator } = require("../validator/registraion");
 
-router.get("/sing-up", signUpGetController);
-router.post("/sing-up", signUpPostController);
+router.get("/register", signUpGetController);
+router.post("/register", registerValidator, signUpPostController);
 
 router.get("/login", loginGetController);
-router.post("/login", loginPostController);
+router.post("/login", loginValidator, loginPostController);
 
 router.post("/logout", logout);
 

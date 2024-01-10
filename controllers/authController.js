@@ -26,6 +26,7 @@ exports.signUpPostController = async (req, res, next) => {
     });
 
     const createUser = await user.save();
+    console.log(createUser);
     res.json(createUser);
   } catch (e) {
     console.log(e);
@@ -37,6 +38,7 @@ exports.signUpPostController = async (req, res, next) => {
 
 exports.loginGetController = (req, res, next) => {};
 
+// login
 exports.loginPostController = async (req, res, next) => {
   const { email, password } = req.body;
   try {
