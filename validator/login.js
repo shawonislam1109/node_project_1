@@ -2,7 +2,7 @@ const { validationResult, check } = require("express-validator");
 const User = require("../models/Users");
 
 exports.loginValidator = [
-  check("username").notEmpty().withMessage("username or email is required"),
+  check("email").notEmpty().withMessage("username or email is required"),
   check("password").notEmpty().withMessage("password is required"),
   (req, res, next) => {
     const errors = validationResult(req);

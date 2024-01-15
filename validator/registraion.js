@@ -26,7 +26,6 @@ exports.registerValidator = [
     .withMessage("Invalid email address")
     .custom(async (email) => {
       let user = await User.findOne({ email });
-      console.log(user);
       if (user) {
         return Promise.reject("email all ready is use");
       }
@@ -37,7 +36,8 @@ exports.registerValidator = [
     .withMessage("password is required")
     .isLength({ min: 8 })
     .withMessage("password must be 8 characters"),
-  check("confirmPassword").custom((confirmPassword, { req }) => {
+
+  check("confirmPassword").custom((confirmPassword, { req, next }) => {
     if (confirmPassword !== req.body.password) {
       throw new Error("Password does not match");
     }
@@ -45,11 +45,12 @@ exports.registerValidator = [
   }),
 
   (req, res, next) => {
-    let result = validationResult(req);
-    const result2 = result.formatWith((error) => error.msg).mapped();
-    if (result2) {
-      return res.status(422).json(result2);
+    const result2 = validationResult(req);
+    // const result2 = result.formatWith((error) => error.msg).mapped();
+    if (!result2.isEmpty()) {
+      return res.status(422).json({ data: result2.errors });
     }
+
     next();
   },
 ];

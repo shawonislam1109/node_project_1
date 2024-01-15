@@ -26,17 +26,25 @@ exports.signUpPostController = async (req, res, next) => {
     });
 
     const createUser = await user.save();
-    console.log(createUser);
     res.json(createUser);
   } catch (e) {
     console.log(e);
     res.json({
-      message: error?.message,
+      message: e?.message,
     });
   }
 };
 
-exports.loginGetController = (req, res, next) => {};
+exports.loginGetController = (req, res, next) => {
+  // console.log(req.get("Cookie"));
+
+  res.json({
+    user: req.session.user,
+    isLoggedIn: req.session.loggedIn,
+  });
+  console.log(req.session.user);
+  console.log(req.session.loggedIn);
+};
 
 // login
 exports.loginPostController = async (req, res, next) => {
@@ -58,8 +66,22 @@ exports.loginPostController = async (req, res, next) => {
       });
     }
 
-    res.json({
+    // res.setHeader("Set-Cookie", "isLoggedIn=true");
+
+    // session
+    req.session.loggedIn = true;
+    req.session.user = user;
+
+    req.session.save((err) => {
+      if (err) {
+        console.log(err);
+        return next();
+      }
+    });
+
+    res.status(200).json({
       message: "successFully login",
+      data: user,
     });
   } catch (error) {
     console.log(error);
@@ -67,4 +89,14 @@ exports.loginPostController = async (req, res, next) => {
   }
 };
 
-exports.logout = (req, res, next) => {};
+exports.logout = (req, res, next) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.log(err);
+      next();
+    }
+    res.json({
+      message: "logout successFully",
+    });
+  });
+};
