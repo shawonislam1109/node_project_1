@@ -50,7 +50,6 @@ exports.registerValidator = [
     if (!result2.isEmpty()) {
       return res.status(422).json({ data: result2.errors });
     }
-
     next();
   },
 ];

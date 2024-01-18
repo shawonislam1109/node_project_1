@@ -1,62 +1,45 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const morgan = require("morgan");
+require("dotenv").config();
 const app = express();
-const session = require("express-session");
-const MongoDBStore = require("connect-mongodb-session")(session);
 
-// Import
-const authRoute = require("./routes/authRouter");
-const { bindUserWithRequest } = require("./middleware/authMiddleware");
-const setLocals = require("./middleware/setLocals");
-const { dashBoardGetController } = require("./controllers/dashboardController");
+// import
+const setRouters = require("./routes/mainRoutes");
+const setMiddleware = require("./middleware/combineMiddleware");
 
 //  ejs setUp
-app.set("view engine", "ejs");
-app.set("views", "views");
+// app.set("view engine", "ejs");
+// app.set("views", "views");
+
+let DB_USERNAME = process.env.USER_NAME;
+let DB_PASSWORD = process.env.USER_PASSWORD;
+
+// console.log(config.get("db_username"));
 
 //  mongodb url
-const mongodb_Url =
-  "mongodb+srv://shunnoIT_project1:cN8qroPsviiskJcy@cluster0.5rnuhbi.mongodb.net/shunnoIt_project";
+const mongodb_Url = `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@cluster0.5rnuhbi.mongodb.net/shunnoIt_project`;
 
-// store session in mongodb
-const store = new MongoDBStore({
-  uri: mongodb_Url,
-  collection: "mySessions",
-  expires: 1000 * 60 * 60 * 2,
-});
+// Usings middleware from middleware directory
+setMiddleware(app);
 
-//  middleware
-const middleware = [
-  morgan("dev"),
-  express.static("public"),
-  express.urlencoded({ extended: true }),
-  express.json(),
-  session({
-    secret: process.env.SECRET_KEY || "SECRET_KEY",
-    resave: false,
-    saveUninitialized: false,
-    store: store,
-  }),
-  bindUserWithRequest(),
-  setLocals(),
-];
+// Usings route from route directory
+setRouters(app);
 
-// middleware connected
-app.use(middleware);
+// 404 page handler
 
-// router connected
-app.use("/auth", authRoute);
-app.use(("/dashboard", dashBoardGetController));
+// app.use((req, res, next) => {
+//   let error = new Error("404");
+//   error.status = 400;
+//   next(error);
+// });
 
-store.on("error", function (error) {
-  // Also get an error here
-});
-
-app.get("/", (req, res) => {
-  res.send({
-    message: "Server is ok",
-  });
+app.use((error, req, res, next) => {
+  if (error.status == 400) {
+    return res.json({ message: "400 page not found" });
+  } else {
+    return res.json({ message: error.message });
+  }
+  // next();
 });
 
 const port = process.env.PORT || 9090;

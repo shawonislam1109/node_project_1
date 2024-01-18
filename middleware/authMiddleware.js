@@ -20,7 +20,7 @@ exports.bindUserWithRequest = () => {
 
 exports.isAuthenticated = (req, res, next) => {
   if (!req.session.loggedIn) {
-    return res.json({ message: "unAuthorize" });
+    return res.json({ message: "unAuthorize token" });
   }
   next();
 };

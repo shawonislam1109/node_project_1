@@ -23,6 +23,11 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "profile",
     },
+    profilePics: {
+      type: String,
+      default:
+        "public/upload/file-1705554708686-133749016_444894843591138_4788350968449810949_n.jpg",
+    },
   },
   {
     timestamps: true,
