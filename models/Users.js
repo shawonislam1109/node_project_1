@@ -25,8 +25,7 @@ const userSchema = new Schema(
     },
     profilePics: {
       type: String,
-      default:
-        "public/upload/file-1705554708686-133749016_444894843591138_4788350968449810949_n.jpg",
+      default: "public/upload/default.jpg",
     },
   },
   {

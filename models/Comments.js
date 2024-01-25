@@ -1,7 +1,7 @@
 const { model, Schema } = require("mongoose");
 
 // const postModel = require("./Post");
-// const User = require("./Users");
+const User = require("./Users");
 
 const commentsSchema = new Schema(
   {
@@ -12,7 +12,7 @@ const commentsSchema = new Schema(
     },
     user: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: User,
       required: true,
     },
     body: {

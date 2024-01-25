@@ -37,7 +37,7 @@ app.use((error, req, res, next) => {
   if (error.status == 400) {
     return res.json({ message: "400 page not found" });
   } else {
-    return res.json({ message: error.message });
+    return res.json({ message: "Server Error occurred" });
   }
   // next();
 });

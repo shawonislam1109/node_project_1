@@ -1,6 +1,8 @@
 const authRouter = require("./authRouter");
 const dashBoardRouter = require("./dashboardRoute");
 const fileUploadRoute = require("./fileUploadRoute");
+const postRoute = require("./postRoute");
+const apiRoute = require("./apiRoute");
 
 const routes = [
   {
@@ -10,6 +12,14 @@ const routes = [
   {
     path: "/dashboard",
     handler: dashBoardRouter,
+  },
+  {
+    path: "/post",
+    handler: postRoute,
+  },
+  {
+    path: "/api",
+    handler: apiRoute,
   },
   {
     path: "/file",

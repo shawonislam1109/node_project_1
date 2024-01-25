@@ -28,6 +28,12 @@ exports.fileUploadController = async (req, res, next) => {
         );
       });
 
+      if (profilePics !== "/upload/default.jpg") {
+        fs.unlink(`public${profilePics}`, (err) => {
+          if (err) console.log(err);
+        });
+      }
+
       res.status(200).json({ file: profilePics });
     } catch (error) {
       next(error);

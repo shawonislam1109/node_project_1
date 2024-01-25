@@ -9,23 +9,24 @@ const profileSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "userModel",
     },
-    title: {
-      type: String,
-      trim: true,
-      maxlength: 100,
-    },
     name: {
       type: String,
       trim: true,
       maxlength: 50,
       required: true,
     },
+    title: {
+      type: String,
+      trim: true,
+      maxlength: 100,
+    },
+
     bio: {
       type: String,
       trim: true,
       maxlength: 500,
     },
-    profilePicture: String,
+    profilePics: String,
     socialLinks: {
       twitter: String,
       facebook: String,
