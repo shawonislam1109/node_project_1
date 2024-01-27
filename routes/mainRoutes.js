@@ -3,6 +3,7 @@ const dashBoardRouter = require("./dashboardRoute");
 const fileUploadRoute = require("./fileUploadRoute");
 const postRoute = require("./postRoute");
 const apiRoute = require("./apiRoute");
+const bookMarks = require("./bookMarks");
 
 const routes = [
   {
@@ -24,6 +25,10 @@ const routes = [
   {
     path: "/file",
     handler: fileUploadRoute,
+  },
+  {
+    path: "/bookmarks",
+    handler: bookMarks,
   },
   {
     path: "/",

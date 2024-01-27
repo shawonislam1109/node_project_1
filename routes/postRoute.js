@@ -11,8 +11,9 @@ const { postValidator } = require("../validator/postValidator");
 const upload = require("../middleware/uploadMiddleware");
 const {
   likeController,
-  updateController,
+  dislikedController,
 } = require("../controllers/likeAndDislikeController");
+const { exploreController } = require("../controllers/exploreController");
 
 const route = require("express").Router();
 
@@ -31,8 +32,9 @@ route.patch(
   updatePostController
 );
 
+route.get("/explore", isAuthenticated, exploreController);
 route.post("/likes/:postId", isAuthenticated, likeController);
-route.post("/dislike/:postId", isAuthenticated, updateController);
+route.post("/dislike/:postId", isAuthenticated, dislikedController);
 route.delete("/delete/:id", isAuthenticated, postDeleteController);
 
 module.exports = route;

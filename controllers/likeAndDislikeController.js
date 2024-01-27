@@ -2,14 +2,15 @@ const Posts = require("../models/Post");
 
 // update controller
 exports.likeController = async (req, res, next) => {
-  try {
-    const { postId } = req.params;
-    let liked = null;
+  const { postId } = req.params;
+  let liked = null;
 
+  if (!req.user) {
+    return res.status(404).json({ error: "Post not found" });
+  }
+
+  try {
     let updateLikes = await Posts.findById({ _id: postId });
-    if (!updateLikes) {
-      return res.status(404).json({ error: "Post not found" });
-    }
 
     if (updateLikes.dislikes.includes(req.user._id)) {
       await Posts.findByIdAndUpdate(
@@ -27,15 +28,23 @@ exports.likeController = async (req, res, next) => {
           $pull: { likes: req.user._id },
         }
       );
-    } else if (!updateLikes.likes.includes(req.user._id)) {
+      liked = false;
+    } else {
       await Posts.findByIdAndUpdate(
         { _id: postId },
         {
           $push: { likes: req.user._id },
         }
       );
+      liked = true;
     }
-    res.json({ message: "Likes updated successfully", post: updateLikes });
+
+    const likesData = await Posts.findById({ _id: postId });
+    res.json({
+      liked: liked,
+      totalLikes: likesData.likes.length,
+      totalDislikes: likesData.dislikes.length,
+    });
   } catch (error) {
     console.error("Error updating likes:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -43,15 +52,18 @@ exports.likeController = async (req, res, next) => {
 };
 
 // DisLike controller
-exports.updateController = async (req, res, next) => {
+exports.dislikedController = async (req, res, next) => {
   const { postId } = req.params;
+  let disliked = null;
 
-  let dislikesData = await Posts.findById({ _id: postId });
-  if (!dislikesData) {
+  if (!req.user) {
     return res.status(404).json({ error: "Post not found" });
   }
+
   try {
-    if (dislikesData.likes.includes(req.user._id)) {
+    let updateLikes = await Posts.findById({ _id: postId });
+
+    if (updateLikes.likes.includes(req.user._id)) {
       await Posts.findByIdAndUpdate(
         { _id: postId },
         {
@@ -60,29 +72,30 @@ exports.updateController = async (req, res, next) => {
       );
     }
 
-    if (dislikesData.dislikes.includes(req.user._id)) {
+    if (updateLikes.dislikes.includes(req.user._id)) {
       await Posts.findByIdAndUpdate(
-        {
-          _id: postId,
-        },
+        { _id: postId },
         {
           $pull: { dislikes: req.user._id },
         }
       );
-    } else if (!dislikesData.dislikes.includes(req.user._id)) {
+      disliked = false;
+    } else {
       await Posts.findByIdAndUpdate(
-        {
-          _id: postId,
-        },
+        { _id: postId },
         {
           $push: { dislikes: req.user._id },
         }
       );
-    } else {
-      res.status(422).json({ message: "somethings went wrong" });
+      disliked = true;
     }
 
-    res.status(201).json({ data: dislikesData });
+    const likesData = await Posts.findById({ _id: postId });
+    res.json({
+      disliked: disliked,
+      totalDislikes: likesData.dislikes.length,
+      totalLikes: likesData.likes.length,
+    });
   } catch (error) {
     console.log(error);
     next(error);
